@@ -9,3 +9,7 @@
 2.  Implement baseline CF models mentioned in paper(SVD based).
 3.  Improve them using technique specified in paper.
 4.  Evaluate using proper metric.
+
+### Dataset
+
+Use dataset as " ../input/ml-100k.data " [Ml-100k](https://drive.google.com/open?id=1ZhRCfdcehqkUYUG91KaSajMsRl3wZbtf)
