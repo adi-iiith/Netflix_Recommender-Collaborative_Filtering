@@ -8,10 +8,6 @@ import math
 
 file_name = "../input/ml-100k.data"
 
-def parse_line(line):
-    line = line.split("\t")
-    uid, iid, r, timestamp = (line[i].strip() for i in range(4))
-    return uid, iid, float(r), timestamp
 
 def Read_Data(file_name,shuffle=True) :
 
