@@ -144,7 +144,7 @@ def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
 
             #sgd
 
-            
+
             bu[u] += lr * (e_ui - reg7 * bu[u])
             bi[i] += lr * (e_ui - reg7 * bi[i])
             p[u] += lr * (e_ui * q[i] - reg * p[u])
@@ -155,3 +155,15 @@ def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
                 w[i,j] += n_lr * (e_ui/ sqrt_N_u * (r - global_mean - bu[u] - bi[j]) - n_reg * w[i,j])
             for j in Nu :
                 c[i,j] += n_lr * ((e_ui / sqrt_N_u) - n_reg * c[i,j])
+
+
+
+
+        n_lr *= 0.9
+        lr *= 0.9
+        print("Time For Epoch :: "+str(datetime.now()-start))
+        start = datetime.now()
+        print("Err = ",estimate(test,"rmse",train_sparse,bu,bi,y,c,w,q,p,global_mean))
+        print("Time For Error :: "+str(datetime.now()-start))
+    return bu,bi,y,c,w,q,p,global_mean
+
