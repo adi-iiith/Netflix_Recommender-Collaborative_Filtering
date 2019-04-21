@@ -70,3 +70,36 @@ def get_user_means(matrix):
 
 
 train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
+
+
+
+
+def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
+
+    matrix = train_sparse.tocsc()
+    user_num = matrix.shape[0]
+    item_num = matrix.shape[1]
+
+    #global mean
+    global_mean = np.sum(matrix.data) / matrix.size
+
+    #user bias
+    bu = np.zeros(user_num, np.double)
+
+    #item bias
+    bi = np.zeros(item_num, np.double)
+
+    #user factor
+    p = np.zeros((user_num, n_factors), np.double) + .1
+
+    #item factor
+    q = np.zeros((item_num, n_factors), np.double) + .1
+
+    #item preference facotor
+    y = np.zeros((item_num, n_factors), np.double) + .1
+
+    #weights for neihbourhood
+    w = np.zeros((item_num,item_num))
+
+    #implicit feedback
+    c = np.zeros((item_num,item_num))
