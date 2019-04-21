@@ -69,10 +69,6 @@ def get_user_means(matrix):
     return users_mean
 
 
-train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
-
-
-
 
 def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
 
@@ -166,4 +162,7 @@ def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
         print("Err = ",estimate(test,"rmse",train_sparse,bu,bi,y,c,w,q,p,global_mean))
         print("Time For Error :: "+str(datetime.now()-start))
     return bu,bi,y,c,w,q,p,global_mean
+
+train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
+
 
