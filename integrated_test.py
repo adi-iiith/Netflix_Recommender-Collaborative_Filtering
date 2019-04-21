@@ -168,3 +168,6 @@ q  			= npzfile['arr_5']
 p           = npzfile['arr_6']
 global_mean = npzfile['arr_7']
 
+
+error = estimate(test_dataset, "rmse", train_dataset,bu,bi,y,c,w,q,p,global_mean)
+print("Error : ",error)
