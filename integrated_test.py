@@ -60,6 +60,32 @@ def Read_Data(file_name,shuffle=True) :
 	test = raw_ratings[math.ceil(raw_len*0.8):]
 	return train_sparse,uid,iid,test
 
+def get_user(matrix, u):
+   
+    ratings = matrix.getrow(u).tocoo()
+    return ratings.col, ratings.data
+
+def get_item(matrix, i):
+    
+    ratings = matrix.getcol(i).tocoo()
+    return ratings.row, ratings.data
+
+
+def get_item_means(matrix):
+   
+
+    item_means = {}
+    for i in np.unique(matrix.tocoo().col) :
+        item_means[i] = np.mean(get_item(matrix,i)[1])
+    return item_means
+
+def get_user_means(matrix):
+    
+
+    users_mean = {}
+    for u in np.unique(matrix.tocoo().row) :
+        users_mean[u] = np.mean(get_user(matrix,u)[1])
+    return users_mean
 train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
 
 npzfile = np.load("../integrated_model")
