@@ -86,6 +86,75 @@ def get_user_means(matrix):
     for u in np.unique(matrix.tocoo().row) :
         users_mean[u] = np.mean(get_user(matrix,u)[1])
     return users_mean
+
+
+def estimate(test, measures, train_sparse,bu,bi,y,c,w,q,p,global_mean):
+    with tl.Timer() as t:
+        error = _estimate(test, measures, train_sparse,bu,bi,y,c,w,q,p,global_mean)
+
+    error = np.sqrt(np.mean(np.power(error, 2)))
+    return error
+
+def predict(matrix, u, i,bu,bi,y,c,w,q,p,global_mean):
+	
+	Nu = get_user(matrix,u)[0]
+
+	I_Nu = len(Nu)
+	sqrt_N_u = np.sqrt(I_Nu)
+
+	y_u = np.sum(y[Nu], axis=0) / sqrt_N_u
+
+	w_ij = np.dot((get_user(matrix,u)[1] - global_mean - bu[u] - bi[Nu]) ,w[i][Nu])
+	c_ij = np.sum(c[i,Nu] , axis = 0)
+	c_w =  (c_ij + w_ij )/sqrt_N_u
+
+
+	est = global_mean + bu[u] + bi[i] + np.dot(q[i], p[u] + y_u) + c_w
+	return est
+
+
+def _estimate(test, measures, train_dataset,bu,bi,y,c,w,q,p,global_mean):
+	global uid_dict,iid_dict
+
+	users_mean = get_user_means(train_dataset)
+	items_mean = get_item_means(train_dataset)
+
+	raw_test_dataset = test
+	global_mean = np.sum(train_dataset.data) / train_dataset.size
+
+
+	all = len(raw_test_dataset)
+	errors = []
+	cur = 0
+	alg_count = 0
+
+	for raw_u, raw_i, r, _ in raw_test_dataset:
+		cur += 1
+		has_raw_u = raw_u in uid_dict
+		has_raw_i = raw_i in iid_dict
+
+		if not has_raw_u and not has_raw_i:
+		    real, est = r, global_mean
+		elif not has_raw_u:
+		    i = iid_dict[raw_i]
+		    real, est = r, items_mean[i]
+		elif not has_raw_i:
+		    u = uid_dict[raw_u]
+		    real, est = r, users_mean[u]
+		else:
+		    u = uid_dict[raw_u]
+		    i = iid_dict[raw_i]
+		    real, est = r, predict(train_dataset,u, i,bu,bi,y,c,w,q,p,global_mean)
+		    alg_count += 1
+
+		est = min(5, est)
+		est = max(1, est)
+		errors.append(real - est)
+
+	return errors
+
+
+
 train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
 
 npzfile = np.load("../integrated_model")
