@@ -23,6 +23,8 @@ def Read_Data(file_name,shuffle=True) :
 	with open(os.path.expanduser(file_name)) as f:
 		raw_ratings = [parse_line(line) for line in itertools.islice(f, 0, None)]
 	if shuffle:
+		# train_test shuffle in reproducable manner
+		np.random.seed(73)
 		np.random.shuffle(raw_ratings)
 
 	raw_len = len(raw_ratings)
