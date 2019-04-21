@@ -103,3 +103,67 @@ def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
 
     #implicit feedback
     c = np.zeros((item_num,item_num))
+
+
+
+    n_lr = 0.001
+    lr = 0.007
+    reg = 0.001
+    n_reg = 0.015
+
+    reg7 = 0.005
+
+    for current_epoch in range(n_epochs):
+        start = datetime.now()
+        print(" processing epoch {}".format(current_epoch))
+        
+        for u,i,r in all_ratings(matrix):
+            
+            Nu = get_user(matrix,u)[0]
+            I_Nu = len(Nu)
+            sqrt_N_u = np.sqrt(I_Nu)
+
+            
+            y_u = np.sum(y[Nu], axis=0)
+
+            u_impl_prf = y_u / sqrt_N_u
+
+            c_ij = np.sum(c[i,Nu] , axis = 0)
+
+            w_ij = np.dot((get_user(matrix,u)[1] - global_mean - bu[u] - bi[Nu]) ,w[i][Nu])
+
+
+            c_w =  (c_ij + w_ij )/sqrt_N_u
+
+           
+            rp = global_mean + bu[u] + bi[i] + np.dot(q[i], p[u] + u_impl_prf) + c_w
+
+            
+            e_ui = r - rp
+
+
+            #sgd
+
+
+            bu[u] += lr * (e_ui - reg7 * bu[u])
+            bi[i] += lr * (e_ui - reg7 * bi[i])
+            p[u] += lr * (e_ui * q[i] - reg * p[u])
+            q[i] += lr * (e_ui * (p[u] + u_impl_prf) - reg * q[i])
+            for j in Nu:
+                y[j] += lr * (e_ui * q[j] / sqrt_N_u - reg * y[j])
+            for j in Nu :
+                w[i,j] += n_lr * (e_ui/ sqrt_N_u * (r - global_mean - bu[u] - bi[j]) - n_reg * w[i,j])
+            for j in Nu :
+                c[i,j] += n_lr * ((e_ui / sqrt_N_u) - n_reg * c[i,j])
+
+
+
+
+        n_lr *= 0.9
+        lr *= 0.9
+        print("Time For Epoch :: "+str(datetime.now()-start))
+        start = datetime.now()
+        print("Err = ",estimate(test,"rmse",train_sparse,bu,bi,y,c,w,q,p,global_mean))
+        print("Time For Error :: "+str(datetime.now()-start))
+    return bu,bi,y,c,w,q,p,global_mean
+
