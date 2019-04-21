@@ -53,16 +53,14 @@ def get_item(matrix, i):
     return ratings.row, ratings.data
 
 def get_item_means(matrix):
-    """
-    """
+   
     item_means = {}
     for i in np.unique(matrix.tocoo().col) :
         item_means[i] = np.mean(get_item(matrix,i)[1])
     return item_means
 
 def get_user_means(matrix):
-    """
-    """
+  
     users_mean = {}
     for u in np.unique(matrix.tocoo().row) :
         users_mean[u] = np.mean(get_user(matrix,u)[1])
@@ -158,11 +156,11 @@ def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
         n_lr *= 0.9
         lr *= 0.9
         print("Time For Epoch :: "+str(datetime.now()-start))
-        start = datetime.now()
-        print("Err = ",estimate(test,"rmse",train_sparse,bu,bi,y,c,w,q,p,global_mean))
-        print("Time For Error :: "+str(datetime.now()-start))
+     
     return bu,bi,y,c,w,q,p,global_mean
 
 train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
+bu,bi,y,c,w,q,p,global_mean = train(train_dataset,test_dataset,30)
+np.savez("../integrated_model",bu,bi,y,c,w,q,p,global_mean)
 
 
