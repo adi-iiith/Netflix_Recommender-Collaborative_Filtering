@@ -44,6 +44,15 @@ def parse_line(line):
     uid, iid, r, timestamp = (line[i].strip() for i in range(4))
     return uid, iid, float(r), timestamp
 
+
+def get_user(matrix, u):
+    """
+    (u, (is, rs)) 
+    """
+
+    ratings = matrix.getrow(u).tocoo()
+    return ratings.col, ratings.data
+
 def Read_Data(file_name,shuffle=True) :
 
 	# data = pd.read_csv(file_name,sep = "\t", names = ["uid","iid","r","timst"])
