@@ -1,14 +1,12 @@
 import numpy as np
 from scipy.sparse import csr_matrix
-from util.matrix import Matrix
-import util.tools as tl
 import pandas as pd
 from datetime import datetime
 import os
 import itertools
 import math
 
-file_name = "data/ml-100k/u.data"
+file_name = "../input/ml-100k.data"
 
 def mapping(train) :
     uid_dict = {}
@@ -89,11 +87,9 @@ def get_user_means(matrix):
 
 
 def estimate(test, measures, train_sparse,bu,bi,y,c,w,q,p,global_mean):
-    with tl.Timer() as t:
-        error = _estimate(test, measures, train_sparse,bu,bi,y,c,w,q,p,global_mean)
-
-    error = np.sqrt(np.mean(np.power(error, 2)))
-    return error
+	error = _estimate(test, measures, train_sparse,bu,bi,y,c,w,q,p,global_mean)
+	error = np.sqrt(np.mean(np.power(error, 2)))
+	return error
 
 def predict(matrix, u, i,bu,bi,y,c,w,q,p,global_mean):
 	
@@ -157,7 +153,7 @@ def _estimate(test, measures, train_dataset,bu,bi,y,c,w,q,p,global_mean):
 
 train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
 
-npzfile = np.load("../integrated_model")
+npzfile = np.load("../integrated_model.npz")
 
 bu 			= npzfile['arr_0']
 bi 			= npzfile['arr_1']
