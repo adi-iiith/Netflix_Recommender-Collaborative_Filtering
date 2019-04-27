@@ -44,15 +44,6 @@ def parse_line(line):
     uid, iid, r, timestamp = (line[i].strip() for i in range(4))
     return uid, iid, float(r), timestamp
 
-
-def get_user(matrix, u):
-    """
-    (u, (is, rs)) 
-    """
-
-    ratings = matrix.getrow(u).tocoo()
-    return ratings.col, ratings.data
-
 def Read_Data(file_name,shuffle=True) :
 
 	# data = pd.read_csv(file_name,sep = "\t", names = ["uid","iid","r","timst"])
@@ -72,4 +63,51 @@ def Read_Data(file_name,shuffle=True) :
 
 	return train_sparse,uid,iid,test
 
-	
+
+def all_ratings(matrix,axis=1):
+    """
+    row(u,i,r)
+    or 
+    col(u, i, r)
+    """
+    coo_matrix = matrix.tocoo()
+
+    if axis == 1:
+        return zip(coo_matrix.row, coo_matrix.col, coo_matrix.data)
+    else:
+        return coo_matrix.row, coo_matrix.col, coo_matrix.data
+
+def get_user(matrix, u):
+    """
+    (u, (is, rs)) 
+    """
+
+    ratings = matrix.getrow(u).tocoo()
+    return ratings.col, ratings.data
+
+def get_item(matrix, i):
+    """
+    (is, (us, rs))
+    """
+
+    ratings = matrix.getcol(i).tocoo()
+    return ratings.row, ratings.data
+
+
+def get_item_means(matrix):
+
+
+    item_means = {}
+    for i in np.unique(matrix.tocoo().col) :
+        item_means[i] = np.mean(get_item(matrix,i)[1])
+    return item_means
+
+def get_user_means(matrix):
+
+
+    users_mean = {}
+    for u in np.unique(matrix.tocoo().row) :
+        users_mean[u] = np.mean(get_user(matrix,u)[1])
+    return users_mean
+
+
