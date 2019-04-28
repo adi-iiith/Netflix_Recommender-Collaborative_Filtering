@@ -6,7 +6,7 @@ import os
 import itertools
 import math
 
-file_name = "../input/ml-100k.data"
+file_name = "../input/u.data"
 
 def mapping(train) :
     uid_dict = {}
