@@ -6,7 +6,7 @@ import os
 import itertools
 import math
 
-file_name = "../input/ml-100k.data"
+file_name = "../input/u.data"
 
 def mapping(train) :
     uid_dict = {}
@@ -78,7 +78,6 @@ def get_item_means(matrix):
     return item_means
 
 def get_user_means(matrix):
-    
 
     users_mean = {}
     for u in np.unique(matrix.tocoo().row) :
@@ -90,6 +89,12 @@ def estimate(test, measures, train_sparse,bu,bi,y,c,w,q,p,global_mean):
 	error = _estimate(test, measures, train_sparse,bu,bi,y,c,w,q,p,global_mean)
 	error = np.sqrt(np.mean(np.power(error, 2)))
 	return error
+
+def convert_id(u,i,r):
+	global uid_dict,iid_dict,user_raw,item_raw,i_rating
+	user_raw.append(list(uid_dict.keys())[list(uid_dict.values()).index(u)])
+	item_raw.append(list(iid_dict.keys())[list(iid_dict.values()).index(i)])
+	i_rating.append(r)
 
 def predict(matrix, u, i,bu,bi,y,c,w,q,p,global_mean):
 	
@@ -106,6 +111,10 @@ def predict(matrix, u, i,bu,bi,y,c,w,q,p,global_mean):
 
 
 	est = global_mean + bu[u] + bi[i] + np.dot(q[i], p[u] + y_u) + c_w
+	temp = min(5, est)
+	temp = max(1, est)
+	convert_id(u,i,temp)
+
 	return est
 
 
@@ -150,6 +159,9 @@ def _estimate(test, measures, train_dataset,bu,bi,y,c,w,q,p,global_mean):
 	return errors
 
 
+user_raw = list()
+item_raw = list()
+i_rating = list()
 
 train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
 
@@ -166,4 +178,7 @@ global_mean = npzfile['arr_7']
 
 
 error = estimate(test_dataset, "rmse", train_dataset,bu,bi,y,c,w,q,p,global_mean)
+
+np.savez("../predictions",np.array(user_raw),np.array(item_raw),np.array(i_rating))
+
 print("Error : ",error)

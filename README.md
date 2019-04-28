@@ -12,4 +12,4 @@
 
 ### Dataset
 
-Use dataset as " ../input/ml-100k.data " [Ml-100k](https://drive.google.com/open?id=1ZhRCfdcehqkUYUG91KaSajMsRl3wZbtf)
+Use dataset as " ../input/u.data " [Ml-100k](https://grouplens.org/datasets/movielens/100k/)
