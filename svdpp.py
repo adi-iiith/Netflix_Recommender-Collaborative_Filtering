@@ -111,3 +111,9 @@ def get_user_means(matrix):
     return users_mean
 
 
+train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
+
+
+bu,bi,y,q,p,global_mean = train(train_dataset,test_dataset,20)
+error = estimate(test_dataset, "rmse", train_dataset,bu,bi,y,q,p,global_mean)
+print(error)
