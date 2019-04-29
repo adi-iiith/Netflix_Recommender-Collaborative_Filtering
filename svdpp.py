@@ -115,6 +115,49 @@ def estimate(test, measures, train_sparse,bu,bi,y,q,p,global_mean):
 
     error = np.sqrt(np.mean(np.power(error, 2)))
     return error
+def _estimate(test, measures, train_dataset,bu,bi,y,q,p,global_mean):
+	global uid_dict,iid_dict
+
+	users_mean = get_user_means(train_dataset)
+	items_mean = get_item_means(train_dataset)
+
+	raw_test_dataset = test
+	global_mean = np.sum(train_dataset.data) / train_dataset.size
+
+
+	all = len(raw_test_dataset)
+	errors = []
+	cur = 0
+	alg_count = 0
+
+	for raw_u, raw_i, r, _ in raw_test_dataset:
+		cur += 1
+		has_raw_u = raw_u in uid_dict
+		has_raw_i = raw_i in iid_dict
+
+		if not has_raw_u and not has_raw_i:
+		    real, est = r, global_mean
+		elif not has_raw_u:
+		    i = iid_dict[raw_i]
+		    real, est = r, items_mean[i]
+		elif not has_raw_i:
+		    u = uid_dict[raw_u]
+		    real, est = r, users_mean[u]
+		else:
+		    u = uid_dict[raw_u]
+		    i = iid_dict[raw_i]
+		    real, est = r, predict(train_dataset,u, i,bu,bi,y,q,p,global_mean)
+		    alg_count += 1
+
+		est = min(5, est)
+		est = max(1, est)
+		errors.append(real - est)
+
+        # self.progress(cur, all, 2000)
+
+	# fold_eval_result = [getattr(ms, measure)(errors) for measure in measures]
+	return errors
+
 
 def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
 
