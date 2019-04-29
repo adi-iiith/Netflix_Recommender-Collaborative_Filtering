@@ -190,9 +190,8 @@ def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
         print("Time For Epoch :: "+str(datetime.now()-start))
      
     return bu,bi,y,c,w,q,p,global_mean
-
+    
 train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
-bu,bi,y,c,w,q,p,global_mean = train(train_dataset,test_dataset,30)
+bu,bi,y,c,w,q,p,global_mean = train(train_dataset,test_dataset,i)
 np.savez("../integrated_model",bu,bi,y,c,w,q,p,global_mean)
-
 
