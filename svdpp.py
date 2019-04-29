@@ -157,7 +157,22 @@ def _estimate(test, measures, train_dataset,bu,bi,y,q,p,global_mean):
 
 	# fold_eval_result = [getattr(ms, measure)(errors) for measure in measures]
 	return errors
+def predict(matrix, u, i,bu,bi,y,q,p,global_mean):
+	# global bu,bi,y,c,w,q,p,global_mean 
+	Nu = get_user(matrix,u)[0]
 
+	I_Nu = len(Nu)
+	sqrt_N_u = np.sqrt(I_Nu)
+
+	y_u = np.sum(y[Nu], axis=0) / sqrt_N_u
+
+	# w_ij = np.dot((get_user(matrix,u)[1] - global_mean - bu[u] - bi[Nu]) ,w[i][Nu])
+	# c_ij = np.sum(c[i,Nu] , axis = 0)
+	# c_w =  (c_ij + w_ij )/sqrt_N_u
+
+
+	est = global_mean + bu[u] + bi[i] + np.dot(q[i], p[u] + y_u) 
+	return est
 
 def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
 
