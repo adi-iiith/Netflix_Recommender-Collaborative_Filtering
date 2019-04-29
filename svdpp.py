@@ -109,7 +109,13 @@ def get_user_means(matrix):
     for u in np.unique(matrix.tocoo().row) :
         users_mean[u] = np.mean(get_user(matrix,u)[1])
     return users_mean
-    
+
+def estimate(test, measures, train_sparse,bu,bi,y,q,p,global_mean):
+    error = _estimate(test, measures, train_sparse,bu,bi,y,q,p,global_mean)
+
+    error = np.sqrt(np.mean(np.power(error, 2)))
+    return error
+
 def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
 
 	matrix = train_sparse.tocsc()
