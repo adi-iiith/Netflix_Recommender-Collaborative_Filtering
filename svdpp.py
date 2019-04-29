@@ -109,6 +109,72 @@ def get_user_means(matrix):
     for u in np.unique(matrix.tocoo().row) :
         users_mean[u] = np.mean(get_user(matrix,u)[1])
     return users_mean
+    
+def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
+
+	matrix = train_sparse.tocsc()
+	user_num = matrix.shape[0]
+	item_num = matrix.shape[1]
+
+	#global mean
+	global_mean = np.sum(matrix.data) / matrix.size
+
+	#user bias
+	bu = np.zeros(user_num, np.double)
+
+	#item bias
+	bi = np.zeros(item_num, np.double)
+
+	#user factor
+	p = np.zeros((user_num, n_factors), np.double) + .1
+
+	#item factor
+	q = np.zeros((item_num, n_factors), np.double) + .1
+
+	#item preference facotor
+	y = np.zeros((item_num, n_factors), np.double) + .1
+
+
+	n_lr = 0.001
+	lr = 0.007
+	reg = 0.001
+	n_reg = 0.015
+
+	reg7 = 0.005
+
+	for current_epoch in range(n_epochs):
+	    start = datetime.now()
+	    print(" processing epoch {}".format(current_epoch))
+
+	    for u,i,r in all_ratings(matrix):
+	        Nu = get_user(matrix,u)[0]
+	        I_Nu = len(Nu)
+	        sqrt_N_u = np.sqrt(I_Nu)
+	        y_u = np.sum(y[Nu], axis=0)
+
+	        u_impl_prf = y_u / sqrt_N_u
+
+
+	        rp = global_mean + bu[u] + bi[i] + np.dot(q[i], p[u] + u_impl_prf) 
+
+	        e_ui = r - rp
+
+	        #sgd
+	        bu[u] += lr * (e_ui - reg7 * bu[u])
+	        bi[i] += lr * (e_ui - reg7 * bi[i])
+	        p[u] += lr * (e_ui * q[i] - reg * p[u])
+	        q[i] += lr * (e_ui * (p[u] + u_impl_prf) - reg * q[i])
+	        for j in Nu:
+	            y[j] += lr * (e_ui * q[j] / sqrt_N_u - reg * y[j])
+
+
+	    n_lr *= 0.9
+	    lr *= 0.9
+	    print("Time For Epoch :: "+str(datetime.now()-start))
+	    start = datetime.now()
+	    print("Err = ",estimate(test,"rmse",train_sparse,bu,bi,y,q,p,global_mean))
+	    print("Time For Error :: "+str(datetime.now()-start))
+	return bu,bi,y,q,p,global_mean
 
 
 train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
