@@ -55,7 +55,7 @@ def Read_Data(file_name,shuffle=True) :
 	raw_len = len(raw_ratings)
 
 	train_sparse,uid,iid = mapping(raw_ratings[:math.ceil(raw_len*0.8)])
-	test = raw_ratings[math.ceil(raw_len*0.8):]
+	test = raw_ratings[math.ceil(raw_len*0.8)-1:]
 	return train_sparse,uid,iid,test
 
 def get_user(matrix, u):
