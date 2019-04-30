@@ -174,28 +174,20 @@ def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
 
 	#global mean
 	global_mean = np.sum(matrix.data) / matrix.size
-
 	#user bias
 	bu = np.zeros(user_num, np.double)
-
 	#item bias
 	bi = np.zeros(item_num, np.double)
-
 	#user factor
 	p = np.zeros((user_num, n_factors), np.double) + .1
-
 	#item factor
 	q = np.zeros((item_num, n_factors), np.double) + .1
-
 	#item preference facotor
 	y = np.zeros((item_num, n_factors), np.double) + .1
-
 	#weights for neihbourhood
 	w = np.zeros((item_num,item_num))
-
 	#implicit feedback
 	c = np.zeros((item_num,item_num))
-
 	n_lr = 0.001
 	lr = 0.007
 	reg = 0.001
@@ -208,29 +200,16 @@ def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
 	    print(" processing epoch {}".format(current_epoch))
 	    
 	    for u,i,r in all_ratings(matrix):
-	        
 	        Nu = get_user(matrix,u)[0]
 	        I_Nu = len(Nu)
-	        sqrt_N_u = np.sqrt(I_Nu)
-
-	        
+	        sqrt_N_u = np.sqrt(I_Nu)	        
 	        y_u = np.sum(y[Nu], axis=0)
-
 	        u_impl_prf = y_u / sqrt_N_u
-
 	        c_ij = np.sum(c[i,Nu] , axis = 0)
-
 	        w_ij = np.dot((get_user(matrix,u)[1] - global_mean - bu[u] - bi[Nu]) ,w[i][Nu])
-
-
 	        c_w =  (c_ij + w_ij )/sqrt_N_u
-
-	       
 	        rp = global_mean + bu[u] + bi[i] + np.dot(q[i], p[u] + u_impl_prf) + c_w
-
-	        
 	        e_ui = r - rp
-
 	        #sgd
 	        bu[u] += lr * (e_ui - reg7 * bu[u])
 	        bi[i] += lr * (e_ui - reg7 * bi[i])
@@ -242,8 +221,6 @@ def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
 	            w[i,j] += n_lr * (e_ui/ sqrt_N_u * (r - global_mean - bu[u] - bi[j]) - n_reg * w[i,j])
 	        for j in Nu :
 	            c[i,j] += n_lr * ((e_ui / sqrt_N_u) - n_reg * c[i,j])
-
-
 	    n_lr *= 0.9
 	    lr *= 0.9
 	    print("Time For Epoch :: "+str(datetime.now()-start))
