@@ -10,6 +10,8 @@
 3.  Improve them using technique specified in paper.
 4.  Evaluate using proper metric.
 
+### Status : Project Implemented.
+
 ### Dataset
 
 Use dataset as " ../input/u.data " [Ml-100k](https://grouplens.org/datasets/movielens/100k/)
