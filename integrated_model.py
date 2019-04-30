@@ -47,23 +47,23 @@ def parse_line(line):
 
 def Read_Data(file_name,shuffle=True) :
 
-	# data = pd.read_csv(file_name,sep = "\t", names = ["uid","iid","r","timst"])
-	# data.sort_values(by = "timst", inplace = True)
+    # data = pd.read_csv(file_name,sep = "\t", names = ["uid","iid","r","timst"])
+    # data.sort_values(by = "timst", inplace = True)
 
-	# train = data.head(n = int(0.8 * data.shape[0]))
-	# test = data.drop(train.index)
-	with open(os.path.expanduser(file_name)) as f:
-		raw_ratings = [parse_line(line) for line in itertools.islice(f, 0, None)]
-	if shuffle:
-		# train_test shuffle in reproducable manner
-		np.random.seed(73)
-		np.random.shuffle(raw_ratings)
+    # train = data.head(n = int(0.8 * data.shape[0]))
+    # test = data.drop(train.index)
+    with open(os.path.expanduser(file_name)) as f:
+        raw_ratings = [parse_line(line) for line in itertools.islice(f, 0, None)]
+    if shuffle:
+        # train_test shuffle in reproducable manner
+        np.random.seed(400)
+        np.random.shuffle(raw_ratings)
 
-	raw_len = len(raw_ratings)
+    raw_len = len(raw_ratings)
 
-	train_sparse,uid,iid = mapping(raw_ratings[:math.ceil(raw_len*0.8)])
-	test = raw_ratings[math.ceil(raw_len*0.8):]
-	return train_sparse,uid,iid,test
+    train_sparse,uid,iid = mapping(raw_ratings[:math.ceil(raw_len*0.8)])
+    test = raw_ratings[math.ceil(raw_len*0.8):]
+    return train_sparse,uid,iid,test
 
 
 def all_ratings(matrix,axis=1):
@@ -190,8 +190,9 @@ def train(train_sparse,test, n_epochs = 30, n_factors = 20) :
         print("Time For Epoch :: "+str(datetime.now()-start))
      
     return bu,bi,y,c,w,q,p,global_mean
-    
+
 train_dataset, uid_dict, iid_dict, test_dataset = Read_Data(file_name,True)
-bu,bi,y,c,w,q,p,global_mean = train(train_dataset,test_dataset,i)
+bu,bi,y,c,w,q,p,global_mean = train(train_dataset,test_dataset,30)
 np.savez("../integrated_model",bu,bi,y,c,w,q,p,global_mean)
+
 
