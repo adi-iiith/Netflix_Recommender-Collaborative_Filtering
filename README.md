@@ -1,43 +1,59 @@
-# Team Houdini (33)
+# Team Houdini
 
 ## [Netflix_Recommender-Collaborative_Filtering -- Yehuda Koren](https://www.cs.rochester.edu/twiki/pub/Main/HarpSeminar/Factorization_Meets_the_Neighborhood-_a_Multifaceted_Collaborative_Filtering_Model.pdf)
 
+### How to clone this repo 
 
-### To-Do List
+``` git clone https://github.com/adi-iiith/Netflix_Recommender-Collaborative_Filtering.git ```
 
-1.  CF deals with building recommendation systems like movie recommender on netflix based on your reviews and choices.
-2.  Implement baseline CF models mentioned in paper(SVD based).
-3.  Improve them using technique specified in paper.
+### Requirements : 
 
-### Status : Project Implemented.
+* Python version - ```3```
+* sparse matrix library - ```scipy.sparse```
 
-### Dataset
+### Objectives : 
 
-Use dataset as " ../input/u.data " [Ml-100k](https://grouplens.org/datasets/movielens/100k/)
+* Implement the paper, reduce the RMSE error for movie prediction and perform better than the currently existing models ( Latent Factor and Nieighbourhood ). 
 
-#### Overview : 
-			
-			.. Save the Dataset in "../input" folder.
-			.. (python v3.x) 
-			.. To train and test Integrated Model :
+### [Dataset](https://grouplens.org/datasets/movielens/100k/)
 
-				--Train model                  -- " python3 integrated_model.py " 
-				--Test  model 				   -- " python3 integrated_train.py " 
-				( OR )
-				-- Train and Test (per epoch ) -- " python3 integrated_model_epoch_error.py"
+* Use dataset as " ../input/u.data " 
 
-			.. To train and test Neighborhood model :
-				-- Train and Test (per epoch ) -- " python3 neighborhood.py"
+### Results : 
 
-			.. To train and test SVDpp model :
-				-- Train and Test (per epoch ) -- "python3 svdpp.py"
+* Movie previously watched by user. 
 
-			.. Predictions for Integrated model (Demo)
-				-- test_beta.ipynp
+![image1](./images/img1.png)
 
-			.. EDA for Dataset :
-				-- EDA.ipynp
+* Movies predicted. 
 
-			.. Project Report 
+![image2](./images/img2.png)
 
-			.. Project Presentation 
+* For further explanation refer to ```Team Houdini.pptx``` or ```Team Houdini.pdf```
+
+#### How to Run the project : 
+
+* Save the Dataset in "../input" folder.
+* (python v3.x) 
+* To train and test Integrated Model :
+
+	--Train model                  -- " python3 integrated_model.py " 
+	--Test  model 				   -- " python3 integrated_train.py " 
+	( OR )
+	-- Train and Test (per epoch ) -- " python3 integrated_model_epoch_error.py"
+
+* To train and test Neighborhood model :
+	* Train and Test (per epoch ) -- " python3 neighborhood.py"
+
+* To train and test SVDpp model :
+	* Train and Test (per epoch ) -- "python3 svdpp.py"
+
+* Predictions for Integrated model (Demo)
+	* test_beta.ipynp
+
+* EDA for Dataset :
+	* EDA.ipynp
+
+.. Project Report 
+
+.. Project Presentation 
